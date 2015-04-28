@@ -7,7 +7,7 @@ var chai              = require("chai"),
     chance = require('chance').Chance();
 
 
-describe("Testing for invalid attributes at signup", function(){
+describe("Testing for invalid attributes on forms.", function(){
 
   this.timeout(99999999);
   var client = {};
@@ -21,6 +21,68 @@ describe("Testing for invalid attributes at signup", function(){
       client = webdriver_angular.remote({ desiredCapabilities: {browserName: "chrome"} });
       client.init()
   });
+
+
+  it("user attempting to signin with unregistered credentials", function(done) {
+      client
+          .url("https://splice.com")
+          // XPath to the signup button
+          .click("//*[@id='header-nav']/div/ul[3]/li[1]/a")
+          // using the same credentials used to register earlier.
+          .setValue("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/input[1]", randomUserName)
+          .setValue("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/input[2]", randomPassword)
+          .click("#submit_signin")
+          .pause(1000)
+          .getText('.dynamic-flash', function(err, text) {
+            assert.strictEqual(text, "Sorry, your username or password is incorrect.\n×");
+          }).call(done);
+  });
+
+
+  it("user attempting to signin with a blank username field", function(done) {
+      client
+          .url("https://splice.com")
+          // XPath to the signup button
+          .click("//*[@id='header-nav']/div/ul[3]/li[1]/a")
+          // using the same credentials used to register earlier.
+          .setValue("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/input[2]", randomPassword)
+          .click("#submit_signin")
+          .pause(1000)
+          .getText('//*[@id="registerModal"]/div/div/div/div/div/div/div/div/form/div/div/div/div[1]/label', function(err, text) {
+            assert.strictEqual(text, "This field is required.");
+          }).call(done);
+  });
+
+
+  it("user attempting to signin with a blank password field", function(done) {
+      client
+          .url("https://splice.com")
+          // XPath to the signup button
+          .click("//*[@id='header-nav']/div/ul[3]/li[1]/a")
+          // using the same credentials used to register earlier.
+          .setValue("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/input[1]", randomUserName)
+          .click("#submit_signin")
+          .pause(1000)
+          .getText('//*[@id="registerModal"]/div/div/div/div/div/div/div/div/form/div/div/div/div[2]/label', function(err, text) {
+            assert.strictEqual(text, "This field is required.");
+          }).call(done);
+  });
+
+  it("user attempting to signin with a password that's less than eight characters.", function(done) {
+      client
+          .url("https://splice.com")
+          // XPath to the signup button
+          .click("//*[@id='header-nav']/div/ul[3]/li[1]/a")
+          // using the same credentials used to register earlier.
+          .setValue("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/input[1]", randomUserName)
+          .setValue("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/input[2]", chance.string({length: 7}))
+          .click("#submit_signin")
+          .pause(1000)
+          .getText("//*[@id='registerModal']/div/div/div/div/div/div/div/div/form/div/div/div/div[2]/label", function(err, text) {
+            assert.strictEqual(text, "Password is minimum 8 characters.");
+          }).call(done);
+  });
+
 
   it("user attempting to signup with a username of two characters recieves an error message.", function(done) {
       client
