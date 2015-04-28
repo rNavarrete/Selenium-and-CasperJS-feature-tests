@@ -10,4 +10,4 @@ To run the Selenium test first make sure that you start up your Selenium server,
 
 mocha splice_user_login_selenium_test.js
 
-*must have mocha, chai, webdriverio, selenium server, chrome web driver, phantomjs, chancejs, java, and nodejs installed in order for the tests to run.
+*must have mocha, chai, webdriverio, webdriverjs-angular, selenium server, chrome web driver, phantomjs, chancejs, java, and nodejs installed in order for the tests to run.

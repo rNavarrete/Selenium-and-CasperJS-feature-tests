@@ -6,7 +6,7 @@ var chai              = require("chai"),
 // Load and instantiate Chance (a minimalist generator of random strings.
     chance = require('chance').Chance();
 
-describe("Testing for invalid attributes at signup", function(){
+describe("Testing for user trying to signup twice", function(){
 
   this.timeout(99999999);
   var client = {};
